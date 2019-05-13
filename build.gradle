@@ -1,5 +1,5 @@
 group 'com.technogi'
-version '0.2.1'
+version '0.2.2'
 
 apply plugin: 'java'
 
@@ -12,10 +12,10 @@ repositories {
 }
 
 dependencies {
-  compile "com.github.Technogi:rdeb-client-java:0.2.0"
+  compile "com.github.Technogi:rdeb-client-java:${version}"
   // https://mvnrepository.com/artifact/com.hazelcast/hazelcast
-  compile 'com.hazelcast:hazelcast-client:3.11.2'
-  compile 'com.hazelcast:hazelcast:3.11.2'
+  compile 'com.hazelcast:hazelcast-client:3.12'
+  compile 'com.hazelcast:hazelcast:3.12'
   compile 'org.slf4j:slf4j-api:1.7.25'
   testCompile 'org.slf4j:slf4j-simple:1.7.25'
   testCompile 'junit:junit:4.12'
