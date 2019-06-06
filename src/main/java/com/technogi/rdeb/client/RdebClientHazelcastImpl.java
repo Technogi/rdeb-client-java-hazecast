@@ -4,6 +4,7 @@ import com.hazelcast.client.HazelcastClient;
 import com.hazelcast.client.config.ClientConfig;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.IList;
+import com.hazelcast.monitor.LocalQueueStats;
 import com.technogi.rdeb.client.exceptions.PublishingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,10 +61,40 @@ public class RdebClientHazelcastImpl implements RdebClient {
         if (!handlerList.isEmpty()) {
           while (!instance.<Event>getQueue(key).isEmpty()) {
             //try {
-              //Event event = instance.<Event>getQueue(key).take();
+            //Event event = instance.<Event>getQueue(key).take();
             log.debug("Reading queue");
             Event event = instance.<Event>getQueue(key).remove();
-            log.debug("There are {} messages available in {}",instance.<Event>getQueue(key).size(), key);
+            if (log.isTraceEnabled()) {
+              log.trace("There are {} messages available in {}", instance.<Event>getQueue(key).size(), key);
+              LocalQueueStats stats = instance.<Event>getQueue(key).getLocalQueueStats();
+              log.trace(
+                  "STATS:" +
+                      "\n\tBackupItemCount: {}" +
+                      "\n\tAvgAge: {}" +
+                      "\n\tEmptyPollOperationCount: {}" +
+                      "\n\tEventOperationCount: {}" +
+                      "\n\tMaxAge: {}" +
+                      "\n\tMinAge: {}" +
+                      "\n\tOfferOperationCount: {}" +
+                      "\n\tOtherOperationsCount: {}" +
+                      "\n\tOwnedItemCount: {}" +
+                      "\n\tOwnedItemCount: {}" +
+                      "\n\tPollOperationCount: {}" +
+                      "\n\tRejectedOfferOperationCoun: {}",
+                  stats.getBackupItemCount(),
+                  stats.getAvgAge(),
+                  stats.getEmptyPollOperationCount(),
+                  stats.getEventOperationCount(),
+                  stats.getMaxAge(),
+                  stats.getMinAge(),
+                  stats.getOfferOperationCount(),
+                  stats.getOtherOperationsCount(),
+                  stats.getOwnedItemCount(),
+                  stats.getOwnedItemCount(),
+                  stats.getPollOperationCount(),
+                  stats.getRejectedOfferOperationCount());
+            }
+
             handlerList.forEach(handler -> handler.apply(event));
             //} catch (InterruptedException e) {
             //  e.printStackTrace();
