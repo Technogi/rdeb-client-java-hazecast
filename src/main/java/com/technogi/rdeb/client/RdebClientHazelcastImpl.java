@@ -61,8 +61,10 @@ public class RdebClientHazelcastImpl implements RdebClient {
           while (!instance.<Event>getQueue(key).isEmpty()) {
             //try {
               //Event event = instance.<Event>getQueue(key).take();
-              Event event = instance.<Event>getQueue(key).remove();
-              handlerList.forEach(handler -> handler.apply(event));
+            log.debug("Reading queue");
+            Event event = instance.<Event>getQueue(key).remove();
+            log.debug("There are {} messages available in {}",instance.<Event>getQueue(key).size(), key);
+            handlerList.forEach(handler -> handler.apply(event));
             //} catch (InterruptedException e) {
             //  e.printStackTrace();
             //}
