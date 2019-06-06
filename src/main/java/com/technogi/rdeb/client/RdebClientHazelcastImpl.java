@@ -59,12 +59,13 @@ public class RdebClientHazelcastImpl implements RdebClient {
       eventHandlersMap.forEach((key, handlerList) -> {
         if (!handlerList.isEmpty()) {
           while (!instance.<Event>getQueue(key).isEmpty()) {
-            try {
-              Event event = instance.<Event>getQueue(key).take();
+            //try {
+              //Event event = instance.<Event>getQueue(key).take();
+              Event event = instance.<Event>getQueue(key).remove();
               handlerList.forEach(handler -> handler.apply(event));
-            } catch (InterruptedException e) {
-              e.printStackTrace();
-            }
+            //} catch (InterruptedException e) {
+            //  e.printStackTrace();
+            //}
           }
         }
       });
@@ -88,8 +89,6 @@ public class RdebClientHazelcastImpl implements RdebClient {
     }
     log.debug("Publishing event {}", event);
     serviceKeys(event).forEach(key -> instance.<Event>getQueue(key).offer(event));
-
-
   }
 
   @Override
